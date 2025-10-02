@@ -1,1 +1,31 @@
-/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Quicksand&display=swap");
+
+/* Tailwind CSS + PrimeUI */
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+
+@import "primeicons/primeicons.css";
+
+
+html, body {
+  padding: 0;
+  margin: 0;
+}
+html {
+  font-size: 16px;
+  font-family: "Quicksand", "sans-serif";
+}
+
+
+/* #region SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
+
+/* Track */
+::-webkit-scrollbar-track { background: var(--base-dark-darken); }
+
+/* Handle */
+::-webkit-scrollbar-thumb { background: var(--base-primary); }
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover { background: var(--base-primary-darken1); }
+/* #endregion SCROLLBAR */
