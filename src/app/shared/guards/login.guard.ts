@@ -12,7 +12,7 @@ export class LoginGuard {
 
     if ((localToken && localToken !== undefined) || (sessionToken && sessionToken !== undefined)) {
       // Está logado, então vai para tela de dashboards
-      this.router.navigate(['/consulta']);
+      this.router.navigate(['/habilidades']);
       return false;
     }
     

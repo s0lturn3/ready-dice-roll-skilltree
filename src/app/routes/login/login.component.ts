@@ -106,7 +106,7 @@ export class LoginComponent implements OnInit {
       this._auth.login(this.form.controls['Campanha'].value, this.form.controls['Personagem'].value).subscribe({
         next: () => {
           this.loading = false;
-          this._router.navigate(['/consulta']);
+          this._router.navigate(['/habilidades']);
         },
         error: error => {
           this._message.add({
