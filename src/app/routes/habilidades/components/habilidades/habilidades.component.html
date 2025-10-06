@@ -1,1 +1,74 @@
 <p>habilidades works!</p>
+
+<!-- HEADER -->
+<div class="flex items-center justify-between p-5">
+  <span class="text-2xl">Lista de Habilidades</span>
+
+  <div class="flex gap-5">
+    <p-button label="Árvore" icon="pi pi-sitemap" routerLink="arvore-interativa" />
+    <p-button label="Nova habilidade" icon="pi pi-plus" (onClick)="showDialog()" />
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="flex items-center gap-5 p-5">
+  <p-inputgroup>
+    <p-inputgroup-addon>
+      <i class="pi pi-search"></i>
+    </p-inputgroup-addon>
+    <input pInputText [(ngModel)]="pesquisa" placeholder="Pesquise pelo Nome ou Descrição" />
+  </p-inputgroup>
+
+  <p-inputgroup>
+    <p-inputgroup-addon>
+        <i class="pi pi-box"></i>
+    </p-inputgroup-addon>
+    <p-select [(ngModel)]="selectedTipo" [options]="tipos$" optionLabel="name" placeholder="Tipo da Habilidade" />
+  </p-inputgroup>
+
+  <p-inputgroup>
+    <p-inputgroup-addon>
+        <i class="pi pi-user"></i>
+    </p-inputgroup-addon>
+    <p-select [(ngModel)]="selectedRaca" [options]="racas$" optionLabel="name" placeholder="Exclusiva de Raça" />
+  </p-inputgroup>
+
+  <p-inputgroup>
+    <p-inputgroup-addon>
+        <i class="pi pi-hammer"></i>
+    </p-inputgroup-addon>
+    <p-select [(ngModel)]="selectedClasse" [options]="classes$" optionLabel="name" placeholder="Exclusiva de Classe" />
+  </p-inputgroup>
+</div>
+
+<!-- LIST -->
+<div class="flex items-center justify-between p-5">
+  <p-table [value]="products" class="w-full" >
+    <ng-template #header>
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Quantity</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-product>
+      <tr>
+        <td>{{ product.code }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.quantity }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+
+<!-- TEMPLATES -->
+<p-dialog header="Nova campanha" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }">
+  @if (visible) {
+    <cadastro-modal [skill]="null" (onCancel)="visible = false" (onSave)="$event ? visible = false : null" />
+  }
+</p-dialog>
+<!-- TEMPLATES -->

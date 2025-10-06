@@ -1,9 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { StorageService } from '../../../../shared/services/storage.service';
+import { FormUtils } from '../../../../shared/utils/form-utils';
+import { SkillsService } from '../../services/skills.service';
+
+import { HabilidadeDto } from '../../../../shared/models/db/habilidade.dto';
+
+import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { InputNumber } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'cadastro-modal',
   imports: [
+    ReactiveFormsModule,
+    NgClass,
 
+    ButtonModule,
+    InputTextModule,
+    TextareaModule,
+    InputNumber,
+
+    ToastModule
   ],
   templateUrl: './cadastro-modal.component.html',
   styleUrl: './cadastro-modal.component.css'
@@ -13,24 +36,42 @@ export class CadastroModalComponent implements OnInit {
   // #region ==========> PROPERTIES <==========
 
   // #region PRIVATE
-  // [...]
+  private _skills: SkillsService = inject(SkillsService);
   // #endregion PRIVATE
 
   // #region PUBLIC
-  // [...]
+  @Input() skill?: HabilidadeDto | null;
+
+  /** Emite um evento ao salvar. O valor enviado indica se o modal deve ser fechado. */
+  @Output() onSave: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() onCancel: EventEmitter<void> = new EventEmitter<void>();
+
+  public saving: boolean = false;
   // #endregion PUBLIC
 
   // #endregion ==========> PROPERTIES <==========
 
 
   // #region ==========> FORM CONFIG <==========
-  // [...]
+  public form: FormGroup = new FormGroup({
+    Nome: new FormControl<string | null>(null, [ Validators.required ]),
+    Descricao: new FormControl<string | null>(null, [ Validators.required ]),
+    Status: new FormControl<number | null>(null, [ Validators.required, Validators.max(100) ]),
+    SistemaId: new FormControl<number | null>(null, [ Validators.max(100) ]),
+  });
+
+  public get FormUtils() { return FormUtils; }
   // #endregion ==========> FORM CONFIG <==========
 
 
-  constructor() { }
+  constructor(
+    private _message: MessageService,
+    private _storage: StorageService
+  ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.validateMode();
+  }
 
 
   // #region ==========> API METHODS <==========
@@ -40,7 +81,9 @@ export class CadastroModalComponent implements OnInit {
   // #endregion GET
 
   // #region POST
-  // [...]
+  saveCampanha(keepOpen: boolean = true) {
+    throw new Error('Method not implemented.');
+  }
   // #endregion POST
 
   // #region PUT
@@ -55,7 +98,20 @@ export class CadastroModalComponent implements OnInit {
 
 
   // #region ==========> UTILS <==========
-  // [...]
+  private validateMode(): void {
+    if (this.skill) {
+      this.form.patchValue({
+        Nome: this.skill.Nome,
+        Descricao: this.skill.DescricaoCurta,
+        Status: 1,
+        SistemaId: 1,
+      });
+    }
+
+    console.log(this.skill);
+    console.log(this.form);
+    
+  }
   // #endregion ==========> UTILS <==========
 
 }
