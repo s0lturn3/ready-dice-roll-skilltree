@@ -21,21 +21,21 @@
 
   <p-inputgroup>
     <p-inputgroup-addon>
-        <i class="pi pi-box"></i>
+      <i class="pi pi-box"></i>
     </p-inputgroup-addon>
     <p-select [(ngModel)]="selectedTipo" [options]="tipos$" optionLabel="name" placeholder="Tipo da Habilidade" />
   </p-inputgroup>
 
   <p-inputgroup>
     <p-inputgroup-addon>
-        <i class="pi pi-user"></i>
+      <i class="pi pi-user"></i>
     </p-inputgroup-addon>
     <p-select [(ngModel)]="selectedRaca" [options]="racas$" optionLabel="name" placeholder="Exclusiva de Raça" />
   </p-inputgroup>
 
   <p-inputgroup>
     <p-inputgroup-addon>
-        <i class="pi pi-hammer"></i>
+      <i class="pi pi-hammer"></i>
     </p-inputgroup-addon>
     <p-select [(ngModel)]="selectedClasse" [options]="classes$" optionLabel="name" placeholder="Exclusiva de Classe" />
   </p-inputgroup>
@@ -66,7 +66,7 @@
 
 
 <!-- TEMPLATES -->
-<p-dialog header="Nova campanha" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }">
+<p-dialog header="Edição de habilidade" [modal]="true" [(visible)]="visible" class="w-1/2" styleClass="w-1/2">
   @if (visible) {
     <cadastro-modal [skill]="null" (onCancel)="visible = false" (onSave)="$event ? visible = false : null" />
   }
