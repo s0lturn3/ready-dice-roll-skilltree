@@ -23,42 +23,42 @@
     <p-inputgroup-addon>
       <i class="pi pi-box"></i>
     </p-inputgroup-addon>
-    <p-select [(ngModel)]="selectedTipo" [options]="tipos$" optionLabel="name" placeholder="Tipo da Habilidade" />
+    <p-select [(ngModel)]="selectedTipo" [options]="tiposHabilidades$" optionValue="Id" optionLabel="Tipo" placeholder="Tipo da Habilidade" />
   </p-inputgroup>
 
   <p-inputgroup>
     <p-inputgroup-addon>
       <i class="pi pi-user"></i>
     </p-inputgroup-addon>
-    <p-select [(ngModel)]="selectedRaca" [options]="racas$" optionLabel="name" placeholder="Exclusiva de Raça" />
+    <p-select [(ngModel)]="selectedRaca" [options]="racas$" optionValue="Id" optionLabel="Nome" placeholder="Exclusiva de Raça" />
   </p-inputgroup>
 
   <p-inputgroup>
     <p-inputgroup-addon>
       <i class="pi pi-hammer"></i>
     </p-inputgroup-addon>
-    <p-select [(ngModel)]="selectedClasse" [options]="classes$" optionLabel="name" placeholder="Exclusiva de Classe" />
+    <p-select [(ngModel)]="selectedClasse" [options]="classes$" optionValue="Id" optionLabel="Nome" placeholder="Exclusiva de Classe" />
   </p-inputgroup>
 </div>
 
 <!-- LIST -->
 <div class="flex items-center justify-between p-5">
-  <p-table [value]="products" class="w-full" >
+  <p-table [value]="habilidades$ ?? []" class="w-full" >
     <ng-template #header>
       <tr>
-        <th>Code</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Quantity</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Nível</th>
+        <th>Tipo</th>
       </tr>
     </ng-template>
 
-    <ng-template #body let-product>
+    <ng-template #body let-habilidade>
       <tr>
-        <td>{{ product.code }}</td>
-        <td>{{ product.name }}</td>
-        <td>{{ product.category }}</td>
-        <td>{{ product.quantity }}</td>
+        <td>{{ habilidade.Nome }}</td>
+        <td>{{ habilidade.DescricaoCurta }}</td>
+        <td>{{ habilidade.Nivel }}</td>
+        <td>{{ habilidade.Tipo }}</td>
       </tr>
     </ng-template>
   </p-table>
@@ -68,7 +68,7 @@
 <!-- TEMPLATES -->
 <p-dialog header="Edição de habilidade" [modal]="true" [(visible)]="visible" class="w-1/2" styleClass="w-1/2">
   @if (visible) {
-    <cadastro-modal [skill]="null" (onCancel)="visible = false" (onSave)="$event ? visible = false : null" />
+    <cadastro-modal [skill]="null" (onCancel)="visible = false" (onSave)="$event ? visible = false : null" (emitValue)="addToList($event)" />
   }
 </p-dialog>
 <!-- TEMPLATES -->

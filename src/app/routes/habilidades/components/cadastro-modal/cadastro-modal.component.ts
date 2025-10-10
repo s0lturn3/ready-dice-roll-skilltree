@@ -16,6 +16,9 @@ import { Select } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { Tooltip } from 'primeng/tooltip';
+import { ClasseDto } from '../../../../shared/models/db/classe.dto';
+import { RacaDto } from '../../../../shared/models/db/raca.dto';
+import { TipoHabilidadeDto } from '../../../../shared/models/db/tipo-habilidade.dto';
 
 
 @Component({
@@ -47,10 +50,177 @@ export class CadastroModalComponent implements OnInit {
   @Input() skill?: HabilidadeDto | null;
 
   /** Emite um evento ao salvar. O valor enviado indica se o modal deve ser fechado. */
+  @Output() emitValue: EventEmitter<HabilidadeDto | null> = new EventEmitter<HabilidadeDto | null>();
   @Output() onSave: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() onCancel: EventEmitter<void> = new EventEmitter<void>();
 
   public saving: boolean = false;
+
+
+  // #region MOCKS
+  public habilidadesDependencia$?: HabilidadeDto[] = [
+    {
+      Id: 1,
+      CampanhaId: 1,
+      Nome: 'Golpe Poderoso',
+      DescricaoCurta: 'Um ataque físico aprimorado pela força bruta.',
+      DescricaoCompleta: 'Concentra toda a força em um único golpe devastador, aumentando o dano físico em 25% por um ataque.',
+      Tipo: 1, // 1 = Física
+      Icone: 'sword-slash',
+      Nivel: 1,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 100,
+      posY: 400,
+    },
+    {
+      Id: 2,
+      CampanhaId: 1,
+      Nome: 'Fúria de Batalha',
+      DescricaoCurta: 'Aumenta o ataque durante o combate.',
+      DescricaoCompleta: 'Entra em estado de fúria, aumentando temporariamente o poder de ataque, mas reduzindo a defesa.',
+      Tipo: 1,
+      Icone: 'flame',
+      Nivel: 2,
+      HabilidadeDependenciaId: 1,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 250,
+      posY: 320,
+    },
+    {
+      Id: 3,
+      CampanhaId: 1,
+      Nome: 'Defesa Instintiva',
+      DescricaoCurta: 'Aumenta a chance de bloqueio de ataques.',
+      DescricaoCompleta: 'Reflexos aprimorados permitem reagir rapidamente a ataques inimigos, concedendo +10% de chance de bloqueio.',
+      Tipo: 1,
+      Icone: 'shield',
+      Nivel: 1,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 100,
+      posY: 500,
+    },
+    {
+      Id: 4,
+      CampanhaId: 1,
+      Nome: 'Resiliência do Guerreiro',
+      DescricaoCurta: 'Reduz o dano recebido por ataques físicos.',
+      DescricaoCompleta: 'Treinamento intenso permite resistir melhor a golpes, reduzindo o dano físico recebido em 15%.',
+      Tipo: 1,
+      Icone: 'armor',
+      Nivel: 2,
+      HabilidadeDependenciaId: 3,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 250,
+      posY: 580,
+    },
+    {
+      Id: 5,
+      CampanhaId: 1,
+      Nome: 'Foco Arcano',
+      DescricaoCurta: 'Canaliza energia mágica com mais eficiência.',
+      DescricaoCompleta: 'Aumenta a regeneração de mana e reduz o custo de feitiços em 10%.',
+      Tipo: 2, // 2 = Mágica
+      Icone: 'magic-wand',
+      Nivel: 1,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 600,
+      posY: 400,
+    },
+    {
+      Id: 6,
+      CampanhaId: 1,
+      Nome: 'Explosão Arcana',
+      DescricaoCurta: 'Libera uma onda de energia mágica destrutiva.',
+      DescricaoCompleta: 'Dano mágico em área que afeta todos os inimigos próximos. Escala com o poder mágico do usuário.',
+      Tipo: 2,
+      Icone: 'burst',
+      Nivel: 2,
+      HabilidadeDependenciaId: 5,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 750,
+      posY: 320,
+    },
+    {
+      Id: 7,
+      CampanhaId: 1,
+      Nome: 'Domínio Elemental',
+      DescricaoCurta: 'Controla elementos básicos com maestria.',
+      DescricaoCompleta: 'Permite alternar entre dano de fogo, gelo ou relâmpago, adaptando-se à fraqueza do inimigo.',
+      Tipo: 2,
+      Icone: 'elemental',
+      Nivel: 3,
+      HabilidadeDependenciaId: 6,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 900,
+      posY: 250,
+    },
+    {
+      Id: 8,
+      CampanhaId: 1,
+      Nome: 'Furtividade',
+      DescricaoCurta: 'Permite mover-se silenciosamente.',
+      DescricaoCompleta: 'Reduz a chance de ser detectado por inimigos enquanto em movimento. Dura até que o personagem ataque.',
+      Tipo: 3, // 3 = Habilidade de Utilidade
+      Icone: 'cloak',
+      Nivel: 1,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 100,
+      posY: 200,
+    },
+    {
+      Id: 9,
+      CampanhaId: 1,
+      Nome: 'Ataque pelas Sombras',
+      DescricaoCurta: 'Ataca o inimigo desprevenido pelas costas.',
+      DescricaoCompleta: 'Causa o dobro de dano se o alvo estiver desprevenido. Requer estar em Furtividade.',
+      Tipo: 3,
+      Icone: 'dagger',
+      Nivel: 2,
+      HabilidadeDependenciaId: 8,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 250,
+      posY: 130,
+    },
+    {
+      Id: 10,
+      CampanhaId: 1,
+      Nome: 'Assassinato Silencioso',
+      DescricaoCurta: 'Finaliza o inimigo de forma letal e discreta.',
+      DescricaoCompleta: 'Um golpe preciso que causa dano crítico massivo em inimigos com menos de 30% de vida. Requer Ataque pelas Sombras.',
+      Tipo: 3,
+      Icone: 'skull',
+      Nivel: 3,
+      HabilidadeDependenciaId: 9,
+      DataCriacao: '2025-10-09T00:00:00Z',
+      posX: 400,
+      posY: 80,
+    },
+  ];
+
+  public tiposHabilidades$?: TipoHabilidadeDto[] = [
+    { Id: 1, Nivel: 1, Tipo: 'Passiva', Descricao: 'Habilidade passiva' },
+    { Id: 2, Nivel: 1, Tipo: 'Ativa', Descricao: 'Habilidade ativa' },
+    { Id: 3, Nivel: 1, Tipo: 'Melhoria', Descricao: 'Melhoria' },
+    { Id: 4, Nivel: 1, Tipo: 'Evolução', Descricao: 'Evolução' },
+  ];
+
+  public classes$?: ClasseDto[] = [
+    { Id: 1, Nome: 'Guerreiro' },
+    { Id: 2, Nome: 'Feiticeiro' },
+    { Id: 3, Nome: 'Paladino' },
+    { Id: 4, Nome: 'Mago' },
+    { Id: 5, Nome: 'Bárbaro' },
+  ];
+
+  public racas$?: RacaDto[] = [
+    { Id: 1, Nome: 'Elfo' },
+    { Id: 2, Nome: 'Humano' },
+    { Id: 3, Nome: 'Morfo' },
+    { Id: 4, Nome: 'Orc' },
+    { Id: 5, Nome: 'Drow' },
+  ];
+  // #endregion MOCKS
+
   // #endregion PUBLIC
 
   // #endregion ==========> PROPERTIES <==========
@@ -89,8 +259,19 @@ export class CadastroModalComponent implements OnInit {
   // #endregion GET
 
   // #region POST
-  saveHabilidade(keepOpen: boolean = true) {
-    FormUtils.validateForm(this.form);
+  public saveHabilidade(close: boolean = true) {
+    if (this.form.valid) {
+      console.log("Formulário atual:", this.form.value);
+
+      const record = this.form.getRawValue() as HabilidadeDto;
+      console.log(record);
+
+      this.onSave.emit(close);
+      this.emitValue.emit(record);
+    }
+    else {
+      FormUtils.validateForm(this.form);
+    }
   }
   // #endregion POST
 
@@ -118,7 +299,6 @@ export class CadastroModalComponent implements OnInit {
 
     console.log(this.skill);
     console.log(this.form);
-    
   }
   // #endregion ==========> UTILS <==========
 

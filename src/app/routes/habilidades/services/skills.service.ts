@@ -3,23 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { ApiResponse } from '../../../shared/models/api-response.model';
-
-
-interface Skill {
-  id: string;
-  label: string;
-  originalId: number;
-  nome: string;
-  descricaoCurta: string;
-  descricaoCompleta: string;
-  tipo: 'Passiva' | 'Habilidade' | 'Melhoria' | 'Evolução';
-  level: number;
-  isRoot: true;
-  unlockStatus: string;
-  campanhaId: number;
-  exclusivaClasseId: number;
-  skillCategory: string;
-}
+import { HabilidadeDto } from '../../../shared/models/db/habilidade.dto';
 
 
 @Injectable({
@@ -33,10 +17,6 @@ export class SkillsService {
   private readonly BASE_URL: string = `${ environment.apiUrl }/skills`;
   // #endregion PRIVATE
 
-  // #region PUBLIC
-  // [...]
-  // #endregion PUBLIC
-
   // #endregion ==========> PROPERTIES <==========
 
 
@@ -46,10 +26,10 @@ export class SkillsService {
   // #region ==========> API METHODS <==========
 
   // #region GET
-  public getSkills(): Observable<ApiResponse<{ habilidades: Skill[] }>> {
-    const url = `${this.BASE_URL}/skills`;
+  public getSkills(): Observable<ApiResponse<HabilidadeDto[]>> {
+    const url = `${this.BASE_URL}`;
 
-    return this._httpClient.get<ApiResponse<{ habilidades: Skill[] }>>(url, { 'headers': this.buildHeaders(true) })
+    return this._httpClient.get<ApiResponse<HabilidadeDto[]>>(url, { 'headers': this.buildHeaders(true) })
     .pipe(
       catchError(this.handleTokenError),
       tap(response => { this.handleError(response) })
@@ -78,38 +58,38 @@ export class SkillsService {
         'Content-type': 'application/json',
         'Accept': 'application/json'
       };
-  
+
       if (appendToken) {
         const token = this.getToken();
         if (token) headersConfig['Authorization'] = `Token ${token}`;
       }
-  
+
       return new HttpHeaders(headersConfig);
     }
-  
+
     private getToken(): string { return window.localStorage['authToken'] || window.sessionStorage['authToken']; }
-  
-  
+
+
     private destroyToken(): void {
       window.localStorage.removeItem('authToken');
       window.sessionStorage.removeItem('authToken');
-      
+
       window.localStorage.removeItem('loggedUserId');
       window.sessionStorage.removeItem('loggedUserId');
-  
+
       window.localStorage.removeItem('loggedUserName');
       window.sessionStorage.removeItem('loggedUserName');
-  
+
       location.reload();
     }
-  
-  
+
+
     private handleError(response: ApiResponse<any>) {
       if (response.error) {      
         if (response.body['message'] === 'jwt expired') {
           this.destroyToken();
         }
-  
+
         throw new Error(response.errorMessage);
       }
     }

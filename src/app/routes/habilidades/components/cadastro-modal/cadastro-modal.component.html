@@ -13,7 +13,7 @@
         <label for="campanhaTipo" class="font-semibold"> Tipo
           <i class="pi pi-info-circle text-blue-500" pTooltip="Informe o tipo da habilidade" style="font-size: .75rem" tooltipPosition="right"></i>
         </label>
-        <p-select inputId="campanhaTipo" formControlName="Tipo" [options]="[]" optionLabel="name" placeholder="Tipo" class="w-full" />
+        <p-select inputId="campanhaTipo" formControlName="Tipo" [options]="tiposHabilidades$" optionValue="Id" optionLabel="Tipo" placeholder="Tipo" class="w-full" />
       </div>
 
       <div class="flex flex-col items-start gap-3 w-1/4">
@@ -46,21 +46,21 @@
         <label for="campanhaHabilidadeDependenciaId" class="font-semibold"> Habilidade pai
           <i class="pi pi-info-circle text-blue-500" pTooltip="Esta habilidade depende de outra para ser desbloqueada?" style="font-size: .75rem" tooltipPosition="right"></i>
         </label>
-        <p-select inputId="campanhaHabilidadeDependenciaId" formControlName="HabilidadeDependenciaId" [options]="[]" optionLabel="name" placeholder="Habilidade pai" class="w-full" />
+        <p-select inputId="campanhaHabilidadeDependenciaId" formControlName="HabilidadeDependenciaId" [options]="habilidadesDependencia$" optionValue="Id" optionLabel="Nome" placeholder="Habilidade pai" class="w-full" />
       </div>
 
       <div class="flex flex-col items-start gap-3 w-1/3">
         <label for="campanhaExclusivaClasseId" class="font-semibold"> Exclusividade de classe
           <i class="pi pi-info-circle text-blue-500" pTooltip="Esta habilidade é exclusiva de alguma classe?" style="font-size: .75rem" tooltipPosition="right"></i>
         </label>
-        <p-select formControlName="ExclusivaClasseId" [options]="[]" optionLabel="name" placeholder="Classe exclusiva" class="w-full" />
+        <p-select formControlName="ExclusivaClasseId" [options]="classes$" optionValue="Id" optionLabel="Nome" placeholder="Classe exclusiva" class="w-full" />
       </div>
 
       <div class="flex flex-col items-start gap-3 w-1/3">
         <label for="campanhaExclusivaRacaId" class="font-semibold"> Exclusividade de raça
           <i class="pi pi-info-circle text-blue-500" pTooltip="Esta habilidade é exclusiva de alguma raça?" style="font-size: .75rem" tooltipPosition="right"></i>
         </label>
-        <p-select formControlName="ExclusivaRacaId" [options]="[]" optionLabel="name" placeholder="Raça exclusiva" class="w-full" />
+        <p-select formControlName="ExclusivaRacaId" [options]="racas$" optionValue="Id" optionLabel="Nome" placeholder="Raça exclusiva" class="w-full" />
       </div>
     </div>
   </div>
@@ -69,5 +69,5 @@
 <div class="flex justify-end gap-2">
   <p-button icon="pi pi-times" label="Cancelar" severity="secondary" (click)="onCancel.emit()" />
   <p-button icon="pi pi-save" [label]="skill ? 'Salvar alterações' : 'Salvar'" [loading]="saving" (click)="saveHabilidade()" />
-  @if (!skill) { <p-button icon="pi pi-save" label="Salvar e continuar" [loading]="saving" (click)="saveHabilidade(true)" /> }
+  @if (!skill) { <p-button icon="pi pi-save" label="Salvar e continuar" [loading]="saving" (click)="saveHabilidade(false)" /> }
 </div>

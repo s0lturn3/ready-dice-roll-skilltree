@@ -10,6 +10,10 @@ import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { ClasseDto } from '../../../../shared/models/db/classe.dto';
+import { HabilidadeDto } from '../../../../shared/models/db/habilidade.dto';
+import { RacaDto } from '../../../../shared/models/db/raca.dto';
+import { TipoHabilidadeDto } from '../../../../shared/models/db/tipo-habilidade.dto';
 import { CadastroModalComponent } from "../cadastro-modal/cadastro-modal.component";
 
 interface Product {
@@ -53,9 +57,9 @@ export class HabilidadesComponent implements OnInit {
 
   // #region PUBLIC
   public loading: boolean = false;
-  public products!: Product[];
-  
   public visible: boolean = false;
+
+  public habilidades$?: HabilidadeDto[];
   // #endregion PUBLIC
 
   // #endregion ==========> PROPERTIES <==========
@@ -64,14 +68,34 @@ export class HabilidadesComponent implements OnInit {
   // #region ==========> FORM CONFIG <==========
   public pesquisa: string = "";
 
-  public tipos$: any;
+  public tiposHabilidades$?: TipoHabilidadeDto[] = [
+    { Id: 1, Nivel: 1, Tipo: 'Passiva', Descricao: 'Habilidade passiva' },
+    { Id: 2, Nivel: 1, Tipo: 'Ativa', Descricao: 'Habilidade ativa' },
+    { Id: 3, Nivel: 1, Tipo: 'Melhoria', Descricao: 'Melhoria' },
+    { Id: 4, Nivel: 1, Tipo: 'Evolução', Descricao: 'Evolução' },
+  ];
+
+  public classes$?: ClasseDto[] = [
+    { Id: 1, Nome: 'Guerreiro' },
+    { Id: 2, Nome: 'Feiticeiro' },
+    { Id: 3, Nome: 'Paladino' },
+    { Id: 4, Nome: 'Mago' },
+    { Id: 5, Nome: 'Bárbaro' },
+  ];
+
+  public racas$?: RacaDto[] = [
+    { Id: 1, Nome: 'Elfo' },
+    { Id: 2, Nome: 'Humano' },
+    { Id: 3, Nome: 'Morfo' },
+    { Id: 4, Nome: 'Orc' },
+    { Id: 5, Nome: 'Drow' },
+  ];
+
   public selectedTipo: any;
-
-  public racas$: any;
   public selectedRaca: any;
-
-  public classes$: any;
   public selectedClasse: any;
+  // #endregion MOCKS
+
   // #endregion ==========> FORM CONFIG <==========
 
 
@@ -86,128 +110,146 @@ export class HabilidadesComponent implements OnInit {
 
   // #region GET
   public getHabilidades(): void {
-    this.products = [
+    this.habilidades$ = [
       {
-        id: '1000',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Elegant and eco-friendly bamboo wristwatch.',
-        image: 'bamboo-watch.jpg',
-        price: 65,
-        category: 'Accessories',
-        quantity: 24,
-        inventoryStatus: 'INSTOCK',
-        rating: 5,
+        Id: 1,
+        CampanhaId: 1,
+        Nome: 'Golpe Poderoso',
+        DescricaoCurta: 'Um ataque físico aprimorado pela força bruta.',
+        DescricaoCompleta: 'Concentra toda a força em um único golpe devastador, aumentando o dano físico em 25% por um ataque.',
+        Tipo: 1, // 1 = Física
+        Icone: 'sword-slash',
+        Nivel: 1,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 100,
+        posY: 400,
       },
       {
-        id: '1001',
-        code: 'nvklal433',
-        name: 'Black Watch',
-        description: 'Stylish black analog watch with leather strap.',
-        image: 'black-watch.jpg',
-        price: 72,
-        category: 'Accessories',
-        quantity: 61,
-        inventoryStatus: 'INSTOCK',
-        rating: 4,
+        Id: 2,
+        CampanhaId: 1,
+        Nome: 'Fúria de Batalha',
+        DescricaoCurta: 'Aumenta o ataque durante o combate.',
+        DescricaoCompleta: 'Entra em estado de fúria, aumentando temporariamente o poder de ataque, mas reduzindo a defesa.',
+        Tipo: 1,
+        Icone: 'flame',
+        Nivel: 2,
+        HabilidadeDependenciaId: 1,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 250,
+        posY: 320,
       },
       {
-        id: '1002',
-        code: 'zz21cz3c1',
-        name: 'Blue Band',
-        description: 'Comfortable blue fitness band with heart-rate tracking.',
-        image: 'blue-band.jpg',
-        price: 79,
-        category: 'Fitness',
-        quantity: 2,
-        inventoryStatus: 'LOWSTOCK',
-        rating: 3,
+        Id: 3,
+        CampanhaId: 1,
+        Nome: 'Defesa Instintiva',
+        DescricaoCurta: 'Aumenta a chance de bloqueio de ataques.',
+        DescricaoCompleta: 'Reflexos aprimorados permitem reagir rapidamente a ataques inimigos, concedendo +10% de chance de bloqueio.',
+        Tipo: 1,
+        Icone: 'shield',
+        Nivel: 1,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 100,
+        posY: 500,
       },
       {
-        id: '1003',
-        code: '244wgerg2',
-        name: 'Game Controller',
-        description: 'Wireless game controller compatible with most consoles.',
-        image: 'game-controller.jpg',
-        price: 99,
-        category: 'Electronics',
-        quantity: 0,
-        inventoryStatus: 'OUTOFSTOCK',
-        rating: 4,
+        Id: 4,
+        CampanhaId: 1,
+        Nome: 'Resiliência do Guerreiro',
+        DescricaoCurta: 'Reduz o dano recebido por ataques físicos.',
+        DescricaoCompleta: 'Treinamento intenso permite resistir melhor a golpes, reduzindo o dano físico recebido em 15%.',
+        Tipo: 1,
+        Icone: 'armor',
+        Nivel: 2,
+        HabilidadeDependenciaId: 3,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 250,
+        posY: 580,
       },
       {
-        id: '1004',
-        code: 'h456wer53',
-        name: 'Leather Wallet',
-        description: 'Genuine leather wallet with multiple compartments.',
-        image: 'leather-wallet.jpg',
-        price: 49,
-        category: 'Accessories',
-        quantity: 15,
-        inventoryStatus: 'INSTOCK',
-        rating: 4,
+        Id: 5,
+        CampanhaId: 1,
+        Nome: 'Foco Arcano',
+        DescricaoCurta: 'Canaliza energia mágica com mais eficiência.',
+        DescricaoCompleta: 'Aumenta a regeneração de mana e reduz o custo de feitiços em 10%.',
+        Tipo: 2, // 2 = Mágica
+        Icone: 'magic-wand',
+        Nivel: 1,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 600,
+        posY: 400,
       },
       {
-        id: '1005',
-        code: 'av2231fwg',
-        name: 'Wireless Headphones',
-        description: 'Noise-cancelling wireless headphones with deep bass.',
-        image: 'wireless-headphones.jpg',
-        price: 119,
-        category: 'Audio',
-        quantity: 5,
-        inventoryStatus: 'LOWSTOCK',
-        rating: 5,
+        Id: 6,
+        CampanhaId: 1,
+        Nome: 'Explosão Arcana',
+        DescricaoCurta: 'Libera uma onda de energia mágica destrutiva.',
+        DescricaoCompleta: 'Dano mágico em área que afeta todos os inimigos próximos. Escala com o poder mágico do usuário.',
+        Tipo: 2,
+        Icone: 'burst',
+        Nivel: 2,
+        HabilidadeDependenciaId: 5,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 750,
+        posY: 320,
       },
       {
-        id: '1006',
-        code: 'bib36pfvm',
-        name: 'Smartphone Stand',
-        description: 'Adjustable aluminum stand for phones and tablets.',
-        image: 'smartphone-stand.jpg',
-        price: 35,
-        category: 'Office',
-        quantity: 42,
-        inventoryStatus: 'INSTOCK',
-        rating: 4,
+        Id: 7,
+        CampanhaId: 1,
+        Nome: 'Domínio Elemental',
+        DescricaoCurta: 'Controla elementos básicos com maestria.',
+        DescricaoCompleta: 'Permite alternar entre dano de fogo, gelo ou relâmpago, adaptando-se à fraqueza do inimigo.',
+        Tipo: 2,
+        Icone: 'elemental',
+        Nivel: 3,
+        HabilidadeDependenciaId: 6,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 900,
+        posY: 250,
       },
       {
-        id: '1007',
-        code: 'mbvjkgip5',
-        name: 'Laptop Bag',
-        description: 'Water-resistant 15-inch laptop bag with extra padding.',
-        image: 'laptop-bag.jpg',
-        price: 89,
-        category: 'Office',
-        quantity: 12,
-        inventoryStatus: 'INSTOCK',
-        rating: 5,
+        Id: 8,
+        CampanhaId: 1,
+        Nome: 'Furtividade',
+        DescricaoCurta: 'Permite mover-se silenciosamente.',
+        DescricaoCompleta: 'Reduz a chance de ser detectado por inimigos enquanto em movimento. Dura até que o personagem ataque.',
+        Tipo: 3, // 3 = Habilidade de Utilidade
+        Icone: 'cloak',
+        Nivel: 1,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 100,
+        posY: 200,
       },
       {
-        id: '1008',
-        code: 'vbb124btr',
-        name: 'Running Shoes',
-        description: 'Lightweight running shoes for everyday training.',
-        image: 'running-shoes.jpg',
-        price: 95,
-        category: 'Fitness',
-        quantity: 9,
-        inventoryStatus: 'LOWSTOCK',
-        rating: 4,
+        Id: 9,
+        CampanhaId: 1,
+        Nome: 'Ataque pelas Sombras',
+        DescricaoCurta: 'Ataca o inimigo desprevenido pelas costas.',
+        DescricaoCompleta: 'Causa o dobro de dano se o alvo estiver desprevenido. Requer estar em Furtividade.',
+        Tipo: 3,
+        Icone: 'dagger',
+        Nivel: 2,
+        HabilidadeDependenciaId: 8,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 250,
+        posY: 130,
       },
       {
-        id: '1009',
-        code: 'cm230f032',
-        name: 'Desk Lamp',
-        description: 'LED desk lamp with adjustable brightness and USB port.',
-        image: 'desk-lamp.jpg',
-        price: 59,
-        category: 'Office',
-        quantity: 34,
-        inventoryStatus: 'INSTOCK',
-        rating: 4,
+        Id: 10,
+        CampanhaId: 1,
+        Nome: 'Assassinato Silencioso',
+        DescricaoCurta: 'Finaliza o inimigo de forma letal e discreta.',
+        DescricaoCompleta: 'Um golpe preciso que causa dano crítico massivo em inimigos com menos de 30% de vida. Requer Ataque pelas Sombras.',
+        Tipo: 3,
+        Icone: 'skull',
+        Nivel: 3,
+        HabilidadeDependenciaId: 9,
+        DataCriacao: '2025-10-09T00:00:00Z',
+        posX: 400,
+        posY: 80,
       }
     ];
+
+    this.habilidades$ = this.habilidades$.sort((a, b) => a.Nome.localeCompare(b.Nome));
   }
   // #endregion GET
 
@@ -237,6 +279,11 @@ export class HabilidadesComponent implements OnInit {
 
   showDialog() {
     this.visible = true;
+  }
+
+  public addToList(record: HabilidadeDto | null): void {
+    if (record) this.habilidades$?.push(record);
+    this.habilidades$ = this.habilidades$?.sort((a, b) => a.Nome.localeCompare(b.Nome));
   }
   // #endregion ==========> UTILS <==========
 
